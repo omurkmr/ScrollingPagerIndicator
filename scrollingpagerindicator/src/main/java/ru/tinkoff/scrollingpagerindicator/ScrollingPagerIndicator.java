@@ -3,15 +3,27 @@ package ru.tinkoff.scrollingpagerindicator;
 import android.animation.ArgbEvaluator;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.VectorDrawable;
+import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
@@ -41,6 +53,9 @@ public class ScrollingPagerIndicator extends View {
     private final Paint paint;
     private final ArgbEvaluator colorEvaluator = new ArgbEvaluator();
 
+    Bitmap idleBm;
+    Bitmap selectedBm;
+
     @ColorInt
     private int dotColor;
 
@@ -68,6 +83,17 @@ public class ScrollingPagerIndicator extends View {
         TypedArray attributes = context.obtainStyledAttributes(
                 attrs, R.styleable.ScrollingPagerIndicator, defStyleAttr, R.style.ScrollingPagerIndicator);
         dotColor = attributes.getColor(R.styleable.ScrollingPagerIndicator_spi_dotColor, 0);
+
+        int idleDrawable = attributes.getResourceId(R.styleable.ScrollingPagerIndicator_spiok_idle_drawable,
+                R.drawable.ic_indicator);
+
+        int selectedDrawable = attributes.getResourceId(R.styleable.ScrollingPagerIndicator_spiok_selected_drawable,
+                R.drawable.ic_indicator_filled);
+
+        idleBm = getBitmap(getContext(),idleDrawable);
+        selectedBm = getBitmap(getContext(),selectedDrawable);
+
+
         selectedDotColor = attributes.getColor(R.styleable.ScrollingPagerIndicator_spi_dotSelectedColor, dotColor);
         dotNormalSize = attributes.getDimensionPixelSize(R.styleable.ScrollingPagerIndicator_spi_dotSize, 0);
         dotSelectedSize = attributes.getDimensionPixelSize(R.styleable.ScrollingPagerIndicator_spi_dotSelectedSize, 0);
@@ -390,6 +416,7 @@ public class ScrollingPagerIndicator extends View {
         setMeasuredDimension(measuredWidth, measuredHeight);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onDraw(Canvas canvas) {
         int dotCount = getDotCount();
@@ -463,11 +490,45 @@ public class ScrollingPagerIndicator extends View {
                 }
 
                 paint.setColor(calculateDotColor(scale));
-                canvas.drawCircle(dot - visibleFramePosition,
-                        getMeasuredHeight() / 2,
-                        diameter / 2,
-                        paint);
+
+                int width = Math.round(dot - visibleFramePosition);
+                int height =  Math.round(getMeasuredHeight() / 2);
+                int radius = Math.round(diameter / 2);
+
+                int bottom = height+radius;
+                int left =  width-radius;
+                int right = width+radius;
+                int top =  height-radius;
+                RectF rectangle = new RectF(left,top,right,bottom);
+
+                if (scale > 0.5){
+                    canvas.drawBitmap(selectedBm,null,rectangle,paint);
+                }else{
+                    canvas.drawBitmap(idleBm,null,rectangle,paint);
+                }
+
             }
+        }
+    }
+
+    private static Bitmap getBitmap(VectorDrawable vectorDrawable) {
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),
+                vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        vectorDrawable.draw(canvas);
+        return bitmap;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private static Bitmap getBitmap(Context context, int drawableId) {
+        Drawable drawable = ContextCompat.getDrawable(context, drawableId);
+        if (drawable instanceof BitmapDrawable) {
+            return BitmapFactory.decodeResource(context.getResources(), drawableId);
+        } else if (drawable instanceof VectorDrawable) {
+            return getBitmap((VectorDrawable) drawable);
+        } else {
+            throw new IllegalArgumentException("unsupported drawable type");
         }
     }
 

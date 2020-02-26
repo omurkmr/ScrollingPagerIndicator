@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
     android:gravity="center_horizontal"
+    android:background="@android:color/holo_green_dark"
     android:orientation="vertical">
 
     <TextView
@@ -26,7 +27,9 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pager_title"
         app:spi_dotColor="@color/dotNormal"
-        app:spi_dotSelectedColor="@color/dotHighlight" />
+        app:spi_dotSelectedColor="@color/dotHighlight"
+        app:spiok_idle_drawable="@drawable/ic_white_dot_unselected"
+        app:spiok_selected_drawable="@drawable/ic_white_dot_selected"/>
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/pager"

@@ -10,5 +10,7 @@
         <attr name="spi_visibleDotCount" format="integer" />
         <attr name="spi_visibleDotThreshold" format="integer" />
         <attr name="spi_looped" format="boolean" />
+        <attr name="spiok_selected_drawable" format="reference" />
+        <attr name="spiok_idle_drawable" format="reference" />
     </declare-styleable>
 </resources>

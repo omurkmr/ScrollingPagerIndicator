@@ -12,8 +12,8 @@ Default behaviour can be found under the customization part.
 ## Custom Customization
 | Attribute| Explanation| Default Value |
 |-----------------------|-----------------------|--------|
-| spiok_selected_drawable | Image of the active indicator dot.|
-| spiok_idle_drawable | Image of the inactive indicator dots.| 
+| spiok_selected_drawable | Image of the active indicator dot.|drawable/R.drawable.ic_indicator_filled|
+| spiok_idle_drawable | Image of the inactive indicator dots.|drawable/R.drawable.ic_indicator|
 
 
 ScrollingPagerIndicator

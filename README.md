@@ -1,5 +1,21 @@
 [![Maven Central][img version shield]][maven]
 
+
+CustomScrollingPagerIndicator
+=======================
+This project forked from the ScrollingPagerIndicator library to add a custom logic. Instead of showing circles, you can add your selected and idle indicator images to show on the indicator.
+
+You can use vector drawables.(Suggests to use webp or png to provide better quality)
+
+Default behaviour can be found under the customization part.
+
+## Custom Customization
+| Attribute| Explanation| Default Value |
+|-----------------------|-----------------------|--------|
+| spiok_selected_drawable | Image of the active indicator dot.|
+| spiok_idle_drawable | Image of the inactive indicator dots.| 
+
+
 ScrollingPagerIndicator
 =======================
 Pager indicator inspired by Instagram. Lightweight and easy to set up.
